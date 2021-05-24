@@ -14,7 +14,7 @@ while True:
     inp = input("<待传输> : ")
     if inp == "login":
         client_sk.sendall(bytes(str(("login", "logic", "070808")), encoding='utf-8'))
-        print(str(client_sk.recv(1024)
+        print(str(client_sk.recv(1024)))
     else:
         client_sk.sendall(bytes(inp, encoding='utf-8'))
     if inp == 'q':
