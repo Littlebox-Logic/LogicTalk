@@ -16,7 +16,7 @@ while True:
         client_sk.sendall(bytes(str(("login", "logic", "070808")), encoding='utf-8'))
         print(str(client_sk.recv(1024)))
     else:
-        client_sk.sendall(bytes(inp, encoding='utf-8'))
+        client_sk.sendall(bytes(inp, encoding='utf-8', encoding='utf-8'))
     if inp == 'q':
         client_sk.sendall(bytes("(\"stop\", -1)", encoding='utf-8'))
         break
