@@ -10,6 +10,7 @@ import json
 import pickle
 from os import mknod, _exit
 from os.path import exists
+from hashlib import 
 import time
 
 onlineu = []
@@ -48,6 +49,7 @@ class Server(socketserver.BaseRequestHandler):
         conn = self.request
         conn.sendall(bytes("\nLogic Talk\nVersion: 0.1.0 (Pre-alpha)\nCopyright (c) 2021 LittleBox Inc.\n\n 已连接到服务器:%s\n 按q结束连接\n\n" % get_host_ip(), encoding='utf-8'))
         ret = str(conn.recv(64), encoding='utf-8')
+        #ret = md5(ret.encode(encoding='UTF-8')).hexdigest()
         conn.sendall(bytes("[验证已收到] " + ret, encoding='utf-8'))
         if tuple(eval(ret))[0] == "login":
             try:
