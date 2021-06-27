@@ -1,11 +1,14 @@
-#!/usr/bin/python3                                                           # -*- coding:utf-8 -*-
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
 
-HOSTNAME = 'localhost'                                                       PORT = 19130
+HOSTNAME = 'localhost'
+PORT = 19130
 
 import socketserver
 import socket
 import json
-import pickle                                                                from os import mknod, _exit
+import pickle
+from os import mknod, _exit
 from os.path import exists
 from datetime import datetime
 import time
@@ -14,7 +17,8 @@ onlineu = []
 userstr = ""
 
 try:
-    if not exists("users.pkl"):                                                      mknod("user.pkl")
+    if not exists("users.pkl"):
+        mknod("user.pkl")
 except:
     pass
 
@@ -28,9 +32,12 @@ user["logic"] = "070808"
 pass
 
 def get_host_ip():
-    try:                                                                             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)                         s.connect(('8.8.8.8', 80))                                                   ip = s.getsockname()[0]
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
     except:
-            ip = "127.0.0.1"
+	    ip = "127.0.0.1"
     finally:
         s.close()
 
@@ -62,7 +69,7 @@ class Server(socketserver.BaseRequestHandler):
                 #conn.sendall(bytes("LoginFail", encoding='utf-8'))
                 #break
         finally:
-            try:
+            try:    
                 if tuple(eval(ret))[0] == "login" and user[tuple(eval(ret))[1]] == tuple(eval(ret))[2]:
                     onlineu += user[tuple(eval(ret))[1]]
                     userstr += user[tuple(eval(ret))[1]].replace('\n', '')
