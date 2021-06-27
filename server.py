@@ -1,13 +1,34 @@
-#!/usr/bin/python3
-# -*- coding:utf-8 -*-
-HOSTNAME = 'localhost'                                                             PORT = 19130
+#!/usr/bin/python3                                                           # -*- coding:utf-8 -*-
+
+HOSTNAME = 'localhost'                                                       PORT = 19130
+
 import socketserver
 import socket
-import json                                                                        import pickle                                                                      from os import mknod, _exit                                                        from os.path import exists                                                         from datetime import datetime                                                      import time                                                                        onlineu = []                                                                       userstr = ""                                                                       try:                                                                                   if not exists("users.pkl"):                                                            mknod("user.pkl")                                                          except:                                                                                pass                                                                           try:                                                                                   with open("user.pkl", 'rb') as f:                                                      user = pickle.load(f)                                                      except:                                                                                user = {}                                                                      user["logic"] = "070808"                                                           pass                                                                               def get_host_ip():
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
+import json
+import pickle                                                                from os import mknod, _exit
+from os.path import exists
+from datetime import datetime
+import time
+
+onlineu = []
+userstr = ""
+
+try:
+    if not exists("users.pkl"):                                                      mknod("user.pkl")
+except:
+    pass
+
+try:
+    with open("user.pkl", 'rb') as f:
+        user = pickle.load(f)
+except:
+    user = {}
+
+user["logic"] = "070808"
+pass
+
+def get_host_ip():
+    try:                                                                             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)                         s.connect(('8.8.8.8', 80))                                                   ip = s.getsockname()[0]
     except:
             ip = "127.0.0.1"
     finally:
