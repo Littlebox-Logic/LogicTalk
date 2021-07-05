@@ -11,10 +11,17 @@ import pickle
 from os import mknod, _exit
 from os.path import exists
 from datetime import datetime
+from re import compile
 import time
 
 onlineu = []
 userstr = ""
+
+# 匹配无端口号IP
+clientip = compile(r'(([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5])\.){3}([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5])')
+# 匹配有端口号IP
+clientipport = compile(r"((?:(?:25[0-5]|2[0-4]\d|(?:1\d{2}|[1-9]?\d))\.){3}(?:25[0-5]|2[0-4]\d|(?:1\d{2}|[1-9]?\d)))")
+# 留作备用
 
 try:
     if not exists("users.pkl"):
@@ -52,9 +59,15 @@ class Server(socketserver.BaseRequestHandler):
         conn.sendall(bytes("\nLogic Talk\nVersion: 0.1.0 (Pre-alpha)\nCopyright (c) 2021 LittleBox Inc.\n\n 已连接到服务器:%s\n 按q结束连接\n\n" % get_host_ip(), encoding='utf-8'))
         try:
             ret = str(conn.recv(64), encoding='utf-8')
+            if ret == '':
+                ret = "空验证"
+            print("<收到验证> %s 验证: %s\n... " % (str(self.client_address)[1:-1], ret), end = '')  
+            if ret == "<2, ClientType: C>":
+                print("<连接类型> %s 来自C语言客户端的连接\n... " % str(self.client_address)[1:-1], end = '') 
+            conn.sendall(bytes("[验证已收到] " + ret, encoding='utf-8'))
         except ConnectionResetError:
-            self.reset()
-        conn.sendall(bytes("[验证已收到] " + ret, encoding='utf-8'))
+            print("<连接重置> %s\n... " % str(self.client_address)[1:-1], end = '')
+            # conn.reset()
         try:
             if tuple(eval(ret))[0] == "login":
                 try:
@@ -63,7 +76,7 @@ class Server(socketserver.BaseRequestHandler):
                 except:
                     print("<导入失败> 登  录 %s\n... " % str(self.client_address)[1:-1], end = '')
                 else:
-                    print("<记录导入> 登  录   %s\n... " % str(self.client_address)[1:-1], end = '')
+                    print("<记录导入> 登  录 %s\n... " % str(self.client_address)[1:-1], end = '')
         except:
             pass
                 #conn.sendall(bytes("LoginFail", encoding='utf-8'))
@@ -76,7 +89,7 @@ class Server(socketserver.BaseRequestHandler):
                     userstr += '\n'
                     conn.sendall(bytes("\n在线用户:\n%s... " % userstr, encoding='utf-8'))
                     print("<在线信息> 已发送 %s\n... " % str(self.client_address)[1:-1], end = '')
-                    print("[已发送] 在线用户:\n├──>[已发送] %s└──>[已发送] ... \n... " % userstr, end = '')
+                    print("[信息发送] 在线用户:\n├──>[信息发送] %s└──>[信息发送] ... \n... " % userstr, end = '')
             except:
                 pass
 
@@ -90,8 +103,8 @@ class Server(socketserver.BaseRequestHandler):
             else:
                 try:
                     if ret != '':
-                        conn.sendall(bytes("[已收到] " + ret, encoding = 'utf-8'))
-                        print("[已收到]-<%s> %s\n... " % (str(self.client_address)[1:-1], ret), end = "")
+                        conn.sendall(bytes("[传输收到] " + ret, encoding = 'utf-8'))
+                        print("[传输收到] %s 信息: %s\n... " % (str(self.client_address)[1:-1], ret), end = "")
                 except:
                     print("<传输断开> %s\n... " % str(self.client_address)[1:-1], end = '')
                     break
@@ -110,7 +123,9 @@ class Server(socketserver.BaseRequestHandler):
         print("<连接结束> %s\n... " % str(self.client_address)[1:-1], end = '')
 
 if __name__ == '__main__':
-    if int(datetime.now().strftime('%H')) < 11:
+    if int(datetime.now().strftime('%H')) < 6:
+        hello = "Early hours of the new day, 加班有度, 减少劳累吧..."
+    elif int(datetime.now().strftime('%H')) < 11:
         hello = "Good morning, 早上好, 煮一杯咖啡吧(๑´0`๑)"
     elif int(datetime.now().strftime('%H')) < 14:
         hello = "It's noon, 借一盏茶意, 休息一下吧(◦˙▽˙◦)"
